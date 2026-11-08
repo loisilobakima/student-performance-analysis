@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 print("Starting Student Score Prediction project...")
 
@@ -70,3 +71,42 @@ print(df["Distance_from_Home"].isnull().sum())
 
 print("\n nnombre de donne manquante dans toute le data frame")
 print(df.isnull().sum())
+
+
+q1=df["Exam_Score"].quantile(0.25)
+q3=df["Exam_Score"].quantile(0.75)
+
+print("\n q1:",q1)
+print("\n q3:" ,q3)
+
+iqr=q3-q1
+
+print("\n iqr:" , iqr)
+
+limit_basse=q1-1.5*iqr
+
+limit_haute=q3+1.5*iqr
+
+print("\n limit_basse:" , limit_basse)
+print("\n limit_haute:" , limit_haute)
+
+
+outliers = df[
+    (df["Exam_Score"] < limit_basse) |
+    (df["Exam_Score"] > limit_haute)
+]
+
+print(outliers["Exam_Score"].value_counts())
+
+percentage = (outliers.shape[0] / df.shape[0]) * 100
+
+print("Percentage of outliers:", percentage, "%")
+
+
+print("\n figure boxplot")
+
+plt.figure()
+
+plt.boxplot(df["Exam_Score"])
+plt.savefig("exam_score_boxplot.png")
+plt.show()
